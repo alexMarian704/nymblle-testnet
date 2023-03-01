@@ -1,21 +1,12 @@
 import {
-    ListItem,
     Text,
-    OrderedList,
-    UnorderedList,
     Flex,
-    Link,
     Box,
   } from '@chakra-ui/react';
   import { MainLayout } from '../components/ui/MainLayout';
   import { HeaderMenu } from '../components/ui/HeaderMenu';
   import { HeaderMenuButtons } from '../components/ui/HeaderMenuButtons';
-  import { SimpleDemo } from '../components/demo/SimpleDemo';
-  import { GetUserDataDemo } from '../components/demo/GetUserDataDemo';
-  import { GetLoggingInStateDemo } from '../components/demo/GetLoggingInStateDemo';
-  import { GetLoginInfoDemo } from '../components/demo/GetLoginInfoDemo';
   import { Authenticated } from '../components/tools/Authenticated';
-  import { CardWrapper } from '../components/ui/CardWrapper';
   import { LoginModalButton } from '../components/tools/LoginModalButton';
   import { FC } from 'react';
   import { changeChain, chainType } from '../config/network';
@@ -70,13 +61,6 @@ import {
             </>
           }
         >
-          {/* <SimpleDemo />
-          <Flex gap={8} flexWrap="wrap" justifyContent="center" mb={4}>
-            <GetUserDataDemo />
-            <GetLoginInfoDemo />
-            <GetLoggingInStateDemo />
-          </Flex> */}
-          {/* <p>{chainType} {chainState}</p> */}
           <ContractsMain chainState={chainState} />
         </Authenticated>
       </MainLayout>

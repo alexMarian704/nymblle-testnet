@@ -117,7 +117,7 @@ const Home: FC = ({ chainState, setChainState }: ChainFunctions) => {
   }, [transaction])
 
   const claimContract = (claim: string) => {
-    let ca = "erd1qqqqqqqqqqqqqpgqrs5vn4mrtdghatj4wwj5wrehfnnn2n2zn60qsu59wr"
+    let ca = "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua"
     let contractfunction = new ContractFunction("claim_ownership")
     let args: any[] = [new AddressValue(new Address(claim))];
 

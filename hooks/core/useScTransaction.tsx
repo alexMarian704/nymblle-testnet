@@ -87,19 +87,13 @@ export function useScTransaction(
 
       tx.setNonce(currentNonce);
 
-      const apiNetwork = new ApiNetworkProvider(chainType === "devnet" ? "https://devnet-api.multiversx.com" : chainType === "testnet" ? "https://testnet-api.multiversx.com" : "https://api.multiversx.com");
-      const testProxy = new ProxyNetworkProvider("https://testnet-gateway.elrond.com");
-      // const apiNetwork = new ApiNetworkProvider("https://testnet-api.multiversx.com")
-
       console.log(dappProvider)
 
       sendTxOperations(
         dappProvider,
         tx,
         loginInfoSnap,
-       // apiNetworkProvider,
-        apiNetwork,
-        testProxy,
+        apiNetworkProvider,
         setTransaction,
         setError,
         setPending,

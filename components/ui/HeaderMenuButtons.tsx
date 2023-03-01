@@ -1,4 +1,4 @@
-import { Box, Text, Link, Select } from '@chakra-ui/react';
+import { Box, Link, Select } from '@chakra-ui/react';
 import { FC } from 'react';
 import { LoginModalButton } from '../tools/LoginModalButton';
 import useWindowDimensions from '../../hooks/tools/useWindowDimensions';
@@ -41,27 +41,27 @@ export const HeaderMenuButtons: FC<HeaderMenuButtonsProps> = ({ enabled, setChai
         borderWidth="2px"
         height="calc(34px + 0.3vw)"
         onChange={(e) => {
-          if (e.target.value === "Testnet") {
-            changeChain("testnet")
-            setChainState("testnet");
-          } else if (e.target.value === "Mainnet") {
-            changeChain("mainnet")
-            setChainState("mainnet")
-          } else {
-            changeChain("devnet")
-            setChainState("devnet")
-          }
+          // if (e.target.value === "Testnet") {
+          //   changeChain("testnet")
+          //   setChainState("testnet");
+          // } else if (e.target.value === "Mainnet") {
+          //   changeChain("mainnet")
+          //   setChainState("mainnet")
+          // } else {
+          //   changeChain("devnet")
+          //   setChainState("devnet")
+          // }
         }}
       >
+        <option value='Testnet' style={{
+          background: "rgb(12,12,12)",
+        }}>Testnet</option>
         <option value='Devnet' style={{
           background: "rgb(12,12,12)"
         }}>Devnet</option>
         <option value='Mainnet' style={{
           background: "rgb(12,12,12)"
         }}>Mainnet</option>
-        <option value='Testnet' style={{
-          background: "rgb(12,12,12)",
-        }}>Testnet</option>
       </Select>
       {enabled.includes('auth') && <LoginModalButton text={width > 630 ? " Connect" : ""} />}
     </Box>

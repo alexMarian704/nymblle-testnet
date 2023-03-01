@@ -84,7 +84,7 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
     useEffect(() => {
         const getAddressPush = async () => {
             if (pending !== false && transaction !== null && error === "") {
-                let contractAddress = new Address("erd1qqqqqqqqqqqqqpgqrs5vn4mrtdghatj4wwj5wrehfnnn2n2zn60qsu59wr");
+                let contractAddress = new Address("erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua");
                 let contract = new SmartContract({ address: contractAddress });
                 let userAddress = new Address(accountSnap.address);
 
