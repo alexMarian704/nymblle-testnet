@@ -75,7 +75,6 @@ const RenderContract: FC = ({ chainState, setChainState }: ChainFunctions) => {
                 let resultsParser = new ResultsParser()
                 let queryResponse = await apiNetworkProvider.queryContract(query)
                 let bundle = resultsParser.parseUntypedQueryResponse(queryResponse);
-                //console.log(bundle.values[0].toString('hex'));
                 const userContractAddress = new Address(bundle.values[0].toString('hex')).bech32()
 
                 const { data: queryData, error: queryError } = await supabase

@@ -192,7 +192,6 @@ const ContractInteract: FC = ({ chainState, setChainState }: ChainFunctions) => 
         let queryResponse = await apiNetworkProvider.queryContract(query)
         let bundle = resultsParser.parseUntypedQueryResponse(queryResponse);
         console.log(bundle.values[0].toString('hex'));
-        // const response = new Address(bundle.values[0].toString('hex')).bech32()
     }
 
     function isPositiveFloat(s: any) {
@@ -287,7 +286,7 @@ const ContractInteract: FC = ({ chainState, setChainState }: ChainFunctions) => 
             triggerTx({
                 smartContractAddress: ca,
                 func: contractfunction,
-                gasLimit: 100000000,
+                gasLimit: 80000000,
                 args: argumentsInit,
                 value: hasEGLDValue != -1 ? Number(functionValue[hasEGLDValue]) : Number(0)
             }).catch((err) => {
@@ -297,7 +296,7 @@ const ContractInteract: FC = ({ chainState, setChainState }: ChainFunctions) => 
             triggerTxESDT({
                 smartContractAddress: ca,
                 func: contractfunction,
-                gasLimit: 100000000,
+                gasLimit: 80000000,
                 value: hasESDTValue != -1 ? Number(functionValue[hasESDTValue]) : Number(0)
             }).catch((err) => {
                 console.log(err)
@@ -396,9 +395,6 @@ const ContractInteract: FC = ({ chainState, setChainState }: ChainFunctions) => 
                                     }}>
                                         <p>{func.dataType[0]}</p>
                                     </div>}
-                                {/* <div className={style.inputSetContainer}>
-                                    <input name={`input${i + 1}`} type="text" />
-                                </div> */}
                                 <button className={style.setButton} onClick={() => sendSCTransaction(func.numberOfInputs, func.name, func.args, i)}><i className="bi bi-check2"></i></button>
                                 {inputError === i && <p style={{
                                     color: "red",

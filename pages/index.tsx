@@ -1,26 +1,16 @@
 import {
-  ListItem,
   Text,
-  OrderedList,
-  UnorderedList,
   Flex,
-  Link,
   Box,
   Spinner,
 } from '@chakra-ui/react';
 import { MainLayout } from '../components/ui/MainLayout';
 import { HeaderMenu } from '../components/ui/HeaderMenu';
 import { HeaderMenuButtons } from '../components/ui/HeaderMenuButtons';
-import { SimpleDemo } from '../components/demo/SimpleDemo';
-import { GetUserDataDemo } from '../components/demo/GetUserDataDemo';
-import { GetLoggingInStateDemo } from '../components/demo/GetLoggingInStateDemo';
-import { GetLoginInfoDemo } from '../components/demo/GetLoginInfoDemo';
 import { Authenticated } from '../components/tools/Authenticated';
-import { CardWrapper } from '../components/ui/CardWrapper';
 import { LoginModalButton } from '../components/tools/LoginModalButton';
 import { FC, useEffect, useState } from 'react';
 import { changeChain, chainType } from '../config/network';
-import ContractsMain from '../components/ui/ContractsMain';
 import { useRouter } from 'next/router';
 import supabase from '../config/supabaseConfig';
 import { useAccount } from '../hooks/auth/useAccount';
@@ -177,7 +167,6 @@ const Home: FC = ({ chainState, setChainState }: ChainFunctions) => {
           </>
         }
       >
-        {/* <ContractsMain /> */}
         <div>
           <h2 className='headerText'><i className="bi bi-file-code"></i> Deployed Contracts</h2>
           <div className="mainDeployTitles">

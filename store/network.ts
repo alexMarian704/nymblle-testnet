@@ -3,7 +3,6 @@ interface NetworkState<T> {
   apiNetworkProvider: T;
 }
 
-// It doesn't have to be tracked or persistent, it will init on every hard refresh
 const networkState: NetworkState<unknown> = {
   dappProvider: null,
   apiNetworkProvider: null,

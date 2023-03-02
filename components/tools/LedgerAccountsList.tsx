@@ -67,7 +67,6 @@ export const LedgerAccountsList: FC<LedgerAccountsListProps> = ({
     return () => {
       mounted.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const handlePrev = useCallback(() => {

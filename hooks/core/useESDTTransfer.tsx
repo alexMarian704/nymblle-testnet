@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
     ContractFunction,
     Address,
@@ -109,16 +108,13 @@ import {
 
         const apiNetwork = new ApiNetworkProvider(chainType === "devnet" ? "https://devnet-api.multiversx.com" : chainType === "testnet" ? "https://testnet-api.multiversx.com" : "https://api.multiversx.com");
         
-  
         tx.setNonce(currentNonce);
   
         sendTxOperations(
           dappProvider,
           tx,
           loginInfoSnap,
-          apiNetwork,
-          //apiNetworkProvider,
-          new ProxyNetworkProvider(""),
+          apiNetworkProvider,
           setTransaction,
           setError,
           setPending,

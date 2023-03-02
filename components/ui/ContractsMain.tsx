@@ -4,18 +4,12 @@ import ContractsList from './ContractsList'
 import { contractsCode } from "../../config/contractsCode"
 import { Address, AddressValue, BigUIntType, BigUIntValue, Code, CodeMetadata, ContractCallPayloadBuilder, ContractFunction, NullType, ResultsParser, SmartContract, TokenIdentifierValue, Transaction, U64Value, U8Value } from "@elrondnetwork/erdjs";
 import { getNetworkState } from '../../store/network';
-import { DappProvider } from '../../types/network';
-import { accountState, loginInfoState } from '../../store/auth';
-import { sendTxOperations } from '../../hooks/core/common-helpers/sendTxOperations';
-
+import { accountState } from '../../store/auth';
 import { useSnapshot } from 'valtio';
 import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers/out';
-import { useWebWalletTxSend } from '../../hooks/core/common-helpers/useWebWalletTxSend';
 import { useScTransaction } from '../../hooks/core/useScTransaction';
-import { SCQueryType, useScQuery } from '../../hooks/core/useScQuery';
 import supabase from '../../config/supabaseConfig';
 import { shortenHash } from '../../utils/shortenHash';
-import BigNumber from 'bignumber.js';
 
 interface InputType {
     [key: string]: string
@@ -39,47 +33,7 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
     const [pendingClaim, setPendingClaim] = useState(false);
     const [deleteError, setDeleteError] = useState(0);
     const [inputError, setInputError] = useState("");
-
-    /////////////////////////////
-    //const [pending, setPending] = useState(false);
-    // const accountSnap = useSnapshot(accountState);
-    // const loginInfoSnap = useSnapshot(loginInfoState);
-    const dappProvider = getNetworkState<DappProvider>('dappProvider')
     const apiNetworkProvider = getNetworkState<ApiNetworkProvider>('apiNetworkProvider')
-
-    // useWebWalletTxSend({ setPending, setTransaction, setError })
-
-    // const testDeploy = async () => {
-    //     let contract = new SmartContract({});
-    //     let response: AxiosResponse<ArrayBuffer> = await axios.get("http://localhost:3000/api/lotterysalut", {
-    //         responseType: "arraybuffer",
-    //         transformResponse: [],
-    //         headers: {
-    //             "Accept": "application/wasm"
-    //         }
-    //     });
-    //     let buffer = Buffer.from(response.data);
-    //     let code = Code.fromBuffer(buffer);
-    //     let transaction = contract.deploy({
-    //         code: code,
-    //         codeMetadata: new CodeMetadata(true, false, false, false),
-    //         initArguments: [new U8Value(0)],
-    //         gasLimit: 10000000,
-    //         chainID: "D"
-    //     })
-
-    //     transaction.setNonce(accountState.nonce)
-    //     sendTxOperations(
-    //         dappProvider,
-    //         transaction,
-    //         loginInfoSnap,
-    //         apiNetworkProvider,
-    //         setTransaction,
-    //         setError,
-    //         setPending,
-    //     )
-    //     console.log(error)
-    // }
 
     useEffect(() => {
         const getAddressPush = async () => {
@@ -154,145 +108,64 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
             .eq('user', accountSnap.address)
             .eq('name', name)
 
-
         if (data?.length === 0) {
-            if (chainState === "devnet") {
-                switch (input) {
-                    case "tokenswap":
-                        if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
-                            argumentsInit = [
-                                new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqnv6f4gmfva26uqepmu5py450rge00l2an60q52aze8")),
-                                new TokenIdentifierValue(inputValue.input1),
-                                new U64Value(Number(inputValue.input2)),
-                            ]
-                        } else {
-                            hasInputError = true;
-                        }
-                        break;
-                    case "lottery":
+            switch (input) {
+                case "tokenswap":
+                    if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
                         argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq9a2xnq64u5c8meytze7gjt66g99tc208n60q6w3y88")),
+                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq7ax3xrkh2dh4scjayuj72wcx9046h442n60qrxkgs7")),
+                            new TokenIdentifierValue(inputValue.input1),
+                            new U64Value(Number(inputValue.input2)),
                         ]
-                        break;
-                    case "nftminter":
+                    } else {
+                        hasInputError = true;
+                    }
+                    break;
+                case "lottery":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq7a7gwazshz3x727lvw60mzx6xd68z4n4n60qzxsa63")),
+                    ]
+                    break;
+                case "nftminter":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq353stmkss82m0kvc3je02h6rp4temqwcn60q0pae05")),
+                    ]
+                    break;
+                case "crowdfunding":
+                    if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
                         argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqxfwsnq0pyqa7e3kysnp57rmryg4hputnn60qh7p5kx")),
+                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqcjgrpxjgxy7e2wuquhd0pryvxenc7l48n60q0k2w0y")),
+                            new BigUIntValue(Number(inputValue.input1)),
+                            new U64Value(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60))
                         ]
-                        break;
-                    case "crowdfunding":
-                        if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
-                            argumentsInit = [
-                                new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq0em87xgzarfaknrtgpxyllqec9kvx7nzn60qhj5qje")),
-                                new BigUIntValue(Number(inputValue.input1)),
-                                new U64Value(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60))
-                            ]
-                        } else {
-                            hasInputError = true;
-                        }
-                        break;
-                    case "nftauction":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqz6hkazz2vlu8pdsjv2zeckrd38kku68un60q6tmeng")),
-                        ]
-                        break;
-                    case "tokensminter":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq49gxv5fg2ren55ul33lj7zkt2jv7mrcqn60q2c8drl")),
-                        ]
-                        break;
-                    case "vote":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq9jk447536d2u3vs3lfpl3rj7xsyjdgwwn60qa7k5pc")),
-                        ]
-                        break;
-                    default:
-                        argumentsInit = []
-                        break;
-                }
-            } else if (chainState === "testnet") {
-                switch (input) {
-                    case "tokenswap":
-                        if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
-                            argumentsInit = [
-                                new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq7ax3xrkh2dh4scjayuj72wcx9046h442n60qrxkgs7")),
-                                new TokenIdentifierValue(inputValue.input1),
-                                new U64Value(Number(inputValue.input2)),
-                            ]
-                        } else {
-                            hasInputError = true;
-                        }
-                        break;
-                    case "lottery":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq7a7gwazshz3x727lvw60mzx6xd68z4n4n60qzxsa63")),
-                        ]
-                        break;
-                    case "nftminter":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq353stmkss82m0kvc3je02h6rp4temqwcn60q0pae05")),
-                        ]
-                        break;
-                    case "crowdfunding":
-                        if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
-                            argumentsInit = [
-                                new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqcjgrpxjgxy7e2wuquhd0pryvxenc7l48n60q0k2w0y")),
-                                new BigUIntValue(Number(inputValue.input1)),
-                                new U64Value(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60))
-                            ]
-                        } else {
-                            hasInputError = true;
-                        }
-                        break;
-                    case "nftauction":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqrkudl3d0ruvp8lev79x5p9l05lcynzs3n60qyx977z")),
-                        ]
-                        break;
-                    case "tokensminter":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqamd2l8e3yct0n6he5vy67llq34m72ffrn60qjt2kz4")),
-                        ]
-                        break;
-                    case "vote":
-                        argumentsInit = [
-                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqez3l87u6c8gl04ktptmfl63uryd3smm2n60qp343l8")),
-                        ]
-                        break;
-                    default:
-                        argumentsInit = []
-                        break;
-                }
-            } else {
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqfrk4qvxkk8ldck9yy5rt98d4kfc6c0z73epqqlqm54")),
-                ]
+                    } else {
+                        hasInputError = true;
+                    }
+                    break;
+                case "nftauction":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqrkudl3d0ruvp8lev79x5p9l05lcynzs3n60qyx977z")),
+                    ]
+                    break;
+                case "tokensminter":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqamd2l8e3yct0n6he5vy67llq34m72ffrn60qjt2kz4")),
+                    ]
+                    break;
+                case "vote":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqez3l87u6c8gl04ktptmfl63uryd3smm2n60qp343l8")),
+                    ]
+                    break;
+                default:
+                    argumentsInit = []
+                    break;
             }
 
-            let ca = chainState === "devnet" ? "erd1qqqqqqqqqqqqqpgqrs5vn4mrtdghatj4wwj5wrehfnnn2n2zn60qsu59wr" : chainState === "testnet" ? "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua" : "erd1qqqqqqqqqqqqqpgqkhsvr34kg6jhzu3u3atcpdzx6mkkkkt73epqgd6s24"
+            let ca = "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua"
             let contractfunction = new ContractFunction("deploy_contract")
 
             if (hasInputError === false) {
-            //     const data = new ContractCallPayloadBuilder()
-            //     .setFunction(contractfunction)
-            //     .setArgs(argumentsInit || [])
-            //     .build();
-        
-            //   const tx = new Transaction({
-            //     data:data,
-            //     gasLimit: 80000000,
-            //     value: Number(0),
-            //     chainID: "T",
-            //     receiver: new Address(ca),
-            //     sender: new Address(accountSnap.address),
-            //   });
-            //   tx.setNonce(accountSnap.nonce);
-            //   try {
-            //       await dappProvider.signTransaction(tx);
-            //   } catch (error) {
-                
-            //   }
-
-
                 triggerTx({
                     smartContractAddress: ca,
                     func: contractfunction,
@@ -318,7 +191,7 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
     }, [triggerTx]);
 
     const claimContract = () => {
-        let ca = chainState === "devnet" ? "erd1qqqqqqqqqqqqqpgqrs5vn4mrtdghatj4wwj5wrehfnnn2n2zn60qsu59wr" : chainState === "testnet" ? "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua" : ""
+        let ca = "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua"
         let contractfunction = new ContractFunction("claim_ownership")
         let args: any[] = [new AddressValue(new Address(claim))];
 
@@ -403,7 +276,6 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
                             fontSize: "calc(16px + 0.1vw)",
                             marginRight: "2px"
                         }}></i>Deploy</button>
-                        {/* <DeployButton type={input} inputValue={inputValue} name={name} chainState={chainState} pending={pending} setPending={setPending} error={error} setError={setError} transaction={transaction} setTransaction={setTransaction}  /> */}
                     </ModalFooter>
                 </ModalContent>
             </Modal>

@@ -1,4 +1,3 @@
-// Tools used internally by sent transactions hooks
 import { Account, TransactionWatcher, Transaction } from '@elrondnetwork/erdjs';
 import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider';
 import { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider';

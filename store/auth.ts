@@ -2,10 +2,8 @@ import { proxy } from 'valtio';
 import { LoginMethodsEnum } from '../types/enums';
 import cloneDeep from 'lodash.clonedeep';
 
-// Account info state + persistance
-
 interface AccountState extends Record<string, unknown> {
-  addressIndex: number; // For HW provider only
+  addressIndex: number;
   address: string;
   nonce: number;
   balance: string;
@@ -30,8 +28,6 @@ export const clearAccountState = () => {
     setAccountState(key, resetObj[key]);
   });
 };
-
-// Login info state + persistance
 
 export interface LoginInfoState extends Record<string, unknown> {
   loginMethod: LoginMethodsEnum;
@@ -62,8 +58,6 @@ export const clearLoginInfoState = () => {
     loginInfoState[key] = resetObj[key];
   });
 };
-
-// Login info state
 
 export interface LoggingInState extends Record<string, unknown> {
   pending: boolean;

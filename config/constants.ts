@@ -2,7 +2,7 @@
 export const dappHostname = process.env.NEXT_PUBLIC_DAPP_HOST;
 
 export const defaultMetaTags = {
-  title: 'SmartStack | App',
-  description: 'SmartStack App',
+  title: 'nymblle | App',
+  description: 'nymblle App',
   image: `${dappHostname}/og-image.png`,
 };

@@ -40,7 +40,6 @@ export const useWebWalletTxSend = ({
     const send = async () => {
       if ('getTransactionsFromWalletUrl' in dappProvider) {
         const txs = dappProvider.getTransactionsFromWalletUrl();
-        // For now it is prepared for handling one transaction at a time
         const transactionObj = txs?.[0];
         if (!transactionObj) return;
         transactionObj.data = Buffer.from(transactionObj.data).toString(
@@ -77,6 +76,5 @@ export const useWebWalletTxSend = ({
     ) {
       send();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
