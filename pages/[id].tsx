@@ -23,14 +23,13 @@ const SyntaxHighlighter = dynamic(import('react-syntax-highlighter/dist/esm/defa
 
 type ChainFunctions = {
     chainState?: any;
-    setChainState?: any;
 };
 
 interface InputType {
     [key: string]: string
 }
 
-const RenderContract: FC = ({ chainState, setChainState }: ChainFunctions) => {
+const RenderContract: FC = ({ chainState }: ChainFunctions) => {
     const router = useRouter();
     const [id, setId] = useState<any>(router.query.id);
     const [nightOwlThemeState, setNightOwlThemeState] = useState<{ [key: string]: React.CSSProperties; } | undefined>(undefined)
@@ -116,7 +115,6 @@ const RenderContract: FC = ({ chainState, setChainState }: ChainFunctions) => {
     const deploySC = useCallback(() => {
         let argumentsInit: any[] = []
 
-        
         switch (id) {
             case "tokenswap":
                 argumentsInit = [
@@ -213,7 +211,7 @@ const RenderContract: FC = ({ chainState, setChainState }: ChainFunctions) => {
     return (
         <MainLayout>
             <HeaderMenu>
-                <HeaderMenuButtons enabled={['auth']} changeChain={changeChain} setChainState={setChainState} />
+                <HeaderMenuButtons enabled={['auth']} changeChain={changeChain}/>
             </HeaderMenu>
             <Authenticated
                 spinnerCentered

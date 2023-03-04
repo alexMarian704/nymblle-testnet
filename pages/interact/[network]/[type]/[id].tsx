@@ -5,7 +5,6 @@ import { MainLayout } from '../../../../components/ui/MainLayout'
 import style from "../../../../style/Contact.module.css"
 import supabase from '../../../../config/supabaseConfig'
 import { useRouter } from 'next/router'
-import { changeChain, chainType } from '../../../../config/network';
 import { HeaderMenuButtons } from '../../../../components/ui/HeaderMenuButtons'
 import { Authenticated } from '../../../../components/tools/Authenticated'
 import { LoginModalButton } from '../../../../components/tools/LoginModalButton'
@@ -19,11 +18,6 @@ import { contractsFunctionSet } from '../../../../config/setFunctions'
 import { useScTransaction } from '../../../../hooks/core/useScTransaction'
 import BigNumber from 'bignumber.js'
 import { useESDTTransfer } from '../../../../hooks/core/useESDTTransfer'
-
-type ChainFunctions = {
-    chainState?: any;
-    setChainState?: any;
-};
 
 interface FunctionType {
     [key: string]: string
@@ -62,7 +56,7 @@ interface ContractData {
     user: string
 }
 
-const ContractInteract: FC = ({ chainState, setChainState }: ChainFunctions) => {
+const ContractInteract: FC = () => {
     const router = useRouter()
     const { id, network, type } = router.query
     const apiNetworkProvider = getNetworkState<ApiNetworkProvider>
@@ -309,7 +303,7 @@ const ContractInteract: FC = ({ chainState, setChainState }: ChainFunctions) => 
     return (
         <MainLayout>
             <HeaderMenu>
-                <HeaderMenuButtons enabled={['auth']} changeChain={changeChain} setChainState={setChainState} />
+                <HeaderMenuButtons enabled={['auth']} />
             </HeaderMenu>
             <Authenticated
                 spinnerCentered

@@ -18,7 +18,7 @@ export const MetaHead: FC<MetaHeadProps> = memo(
           name="description"
           content={metaDescription || defaultMetaTags.description}
         />
-        <meta name="author" content="SmartStack App"></meta>
+        <meta name="author" content="Nymblle App"></meta>
         <meta property="og:type" content="website" />
         <meta
           property="og:title"

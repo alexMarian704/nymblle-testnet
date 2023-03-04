@@ -10,7 +10,6 @@ import { HeaderMenuButtons } from '../components/ui/HeaderMenuButtons';
 import { Authenticated } from '../components/tools/Authenticated';
 import { LoginModalButton } from '../components/tools/LoginModalButton';
 import { FC, useEffect, useState } from 'react';
-import { changeChain, chainType } from '../config/network';
 import { useRouter } from 'next/router';
 import supabase from '../config/supabaseConfig';
 import { useAccount } from '../hooks/auth/useAccount';
@@ -23,12 +22,7 @@ import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers/out';
 import { accountState } from '../store/auth';
 import { useScTransaction } from '../hooks/core/useScTransaction';
 
-type ChainFunctions = {
-  chainState?: any;
-  setChainState?: any;
-};
-
-const Home: FC = ({ chainState, setChainState }: ChainFunctions) => {
+const Home: FC = () => {
   const router = useRouter();
   const { address } = useAccount();
   const [userContracts, setUserContracts] = useState<any[]>([]);
@@ -127,7 +121,7 @@ const Home: FC = ({ chainState, setChainState }: ChainFunctions) => {
   return (
     <MainLayout>
       <HeaderMenu>
-        <HeaderMenuButtons enabled={['auth']} changeChain={changeChain} setChainState={setChainState} />
+        <HeaderMenuButtons enabled={['auth']} />
       </HeaderMenu>
       <Authenticated
         spinnerCentered

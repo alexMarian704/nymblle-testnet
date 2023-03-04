@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { LoginModalButton } from '../tools/LoginModalButton';
 import useWindowDimensions from '../../hooks/tools/useWindowDimensions';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router'
 
 interface HeaderMenuButtonsProps {
   enabled: string[];
@@ -11,7 +12,8 @@ interface HeaderMenuButtonsProps {
   changeChain?: any
 }
 
-export const HeaderMenuButtons: FC<HeaderMenuButtonsProps> = ({ enabled, setChainState, changeChain }) => {
+export const HeaderMenuButtons: FC<HeaderMenuButtonsProps> = ({ enabled }) => {
+  const router = useRouter();
   const { width } = useWindowDimensions();
 
   return (
@@ -19,11 +21,6 @@ export const HeaderMenuButtons: FC<HeaderMenuButtonsProps> = ({ enabled, setChai
       display="flex"
       gap={5}
       alignItems="center"
-      sx={{
-        '@media screen and (max-width: 515px)': {
-          // flexDirection: 'column',
-        },
-      }}
     >
       <Link href=''
         fontSize="calc(18px + 0.1vw)"
@@ -41,24 +38,18 @@ export const HeaderMenuButtons: FC<HeaderMenuButtonsProps> = ({ enabled, setChai
         borderWidth="2px"
         height="calc(34px + 0.3vw)"
         onChange={(e) => {
-          // if (e.target.value === "Testnet") {
-          //   changeChain("testnet")
-          //   setChainState("testnet");
-          // } else if (e.target.value === "Mainnet") {
-          //   changeChain("mainnet")
-          //   setChainState("mainnet")
-          // } else {
-          //   changeChain("devnet")
-          //   setChainState("devnet")
-          // }
+          if(e.target.value === "Mainnet"){
+            //window.open("https://www.w3schools.com/", "_blank")
+            router.push("https://www.w3schools.com/")
+          }
         }}
       >
         <option value='Testnet' style={{
           background: "rgb(12,12,12)",
         }}>Testnet</option>
-        <option value='Devnet' style={{
+        {/* <option value='Devnet' style={{
           background: "rgb(12,12,12)"
-        }}>Devnet</option>
+        }}>Devnet</option> */}
         <option value='Mainnet' style={{
           background: "rgb(12,12,12)"
         }}>Mainnet</option>

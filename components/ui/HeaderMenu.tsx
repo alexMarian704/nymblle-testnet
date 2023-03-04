@@ -12,12 +12,6 @@ export const HeaderMenu: FC<PropsWithChildren> = ({ children }) => {
       gap="2"
       py={2}
       borderBottom="1px solid rgb(110,110,110)"
-      sx={{
-        // '@media screen and (max-width: 1050px)': {
-        //   flexDirection: 'column',
-        //   textAlign: 'center',
-        // },
-      }}
     >
       <Logo />
       {children}

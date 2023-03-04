@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 const SmartStackApp = ({ Component, pageProps }: AppProps) => {
   useNetworkSync();
-  const [chainState, setChainState] = useState("testnet")
+  //const [chainState, setChainState] = useState("testnet")
   const [showChild, setShowChild] = useState(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const SmartStackApp = ({ Component, pageProps }: AppProps) => {
   } else {
     return (
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} chainState={chainState} setChainState={setChainState} />
+        <Component {...pageProps} chainState={"testnet"} />
       </ChakraProvider>
     );
   }

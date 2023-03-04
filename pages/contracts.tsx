@@ -9,19 +9,17 @@ import {
   import { Authenticated } from '../components/tools/Authenticated';
   import { LoginModalButton } from '../components/tools/LoginModalButton';
   import { FC } from 'react';
-  import { changeChain, chainType } from '../config/network';
   import ContractsMain from '../components/ui/ContractsMain';
   
   type ChainFunctions = {
     chainState?: any;
-    setChainState?: any;
   };
   
-  const Home: FC = ({ chainState, setChainState }: ChainFunctions) => {
+  const Home: FC = ({ chainState }: ChainFunctions) => {
     return (
       <MainLayout>
         <HeaderMenu>
-          <HeaderMenuButtons enabled={['auth']} changeChain={changeChain} setChainState={setChainState} />
+          <HeaderMenuButtons enabled={['auth']} />
         </HeaderMenu>
         <Authenticated
           spinnerCentered
