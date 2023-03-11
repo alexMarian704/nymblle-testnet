@@ -196,7 +196,7 @@ pub trait NftMinter {
             description: "Swap EGLD with another token, with a fixed rate",
             longDescription: "The EGLD-ESDT swap is a simple SC that allows the exchange between EGLD and another token on MetaversX blockchain. This contract allows one to create an exchange pool that others can use. He can chose the token to pair with EGLD and the exchange rate (this can be changed even after contract deployment).",
             icon: "bi bi-arrow-left-right",
-            name: 'Lib.rs',
+            name: 'tokenswap.rs',
             code: `#![no_std]
 
 multiversx_sc::imports!();
@@ -341,7 +341,7 @@ pub trait EgldEsdtSwap {
             input: [],
             title: "NFT Auction",
             description: "Let users bid on your NFT, the highest bid wins",
-            longDescription: "The EGLD-ESDT swap is a simple SC that allows the exchange between EGLD and another token on MetaversX blockchain. This contract allows one to create an exchange pool that others can use. He can chose the token to pair with EGLD and the exchange rate (this can be changed even after contract deployment).",
+            longDescription: "The NFT-auction SC allows users to bid on your NFT. The way it works is pretty straigh forward: The person who bids the most wins your NFT. The bid has a starting price and a deadline.",
             icon: "bi bi-hammer",
             name: 'nftauction.rs',
             code: `#![no_std]
@@ -513,7 +513,7 @@ pub trait Auction {
             }],
             title: "Crowdfunding",
             description: "Raising funds up to a certain amount",
-            longDescription: "The EGLD-ESDT swap is a simple SC that allows the exchange between EGLD and another token on MetaversX blockchain. This contract allows one to create an exchange pool that others can use. He can chose the token to pair with EGLD and the exchange rate (this can be changed even after contract deployment).",
+            longDescription: "The Crowdfunding SC is a decentralized tool that enables project creators to set up campaigns and investors to contribute with tokens. It offers transparency and customization options, making it a versatile and powerful way to raise funds.",
             icon: "bi bi-people-fill",
             name: 'crowdfunding.rs',
             code: `#![no_std]
@@ -627,7 +627,7 @@ pub trait Crowdfunding {
             input: [],
             title: "Lottery",
             description: "Users buy tickets, only one wins",
-            longDescription: "The EGLD-ESDT swap is a simple SC that allows the exchange between EGLD and another token on MetaversX blockchain. This contract allows one to create an exchange pool that others can use. He can chose the token to pair with EGLD and the exchange rate (this can be changed even after contract deployment).",
+            longDescription: "The Lottery SC enables users to purchase tickets for a chance to win a prize. The contract automatically selects a winner and distributes the prize, ensuring transparency and fairness.",
             icon: "bi bi-cash-coin",
             name: 'lottery.rs',
             code: `#![no_std]
@@ -785,7 +785,7 @@ pub trait Lottery {
             input: [],
             title: "Token Minter",
             description: "Create cryptocurrency with ERDT standard",
-            longDescription: "The EGLD-ESDT swap is a simple SC that allows the exchange between EGLD and another token on MetaversX blockchain. This contract allows one to create an exchange pool that others can use. He can chose the token to pair with EGLD and the exchange rate (this can be changed even after contract deployment).",
+            longDescription: "The Token Minter SC allows for easy creation and distribution of customized tokens on the blockchain using the ERDT standard. It includes customizable parameters such as name, symbol and supply.",
             icon: "bi bi-coin",
             name: 'tokenminter.rs',
             code: `#![no_std]
@@ -866,7 +866,7 @@ pub trait TokenMinter {
             input: [],
             title: "Vote",
             description: "Create and vote on proposals",
-            longDescription: "The EGLD-ESDT swap is a simple SC that allows the exchange between EGLD and another token on MetaversX blockchain. This contract allows one to create an exchange pool that others can use. He can chose the token to pair with EGLD and the exchange rate (this can be changed even after contract deployment).",
+            longDescription: "The Vote Smart Contract enables transparent and secure voting on blockchain-based proposals. The transparency and security of the voting process, eliminating the need for intermediaries and ensuring that all votes are recorded immutably on the blockchain.",
             icon: "bi bi-person-vcard-fill",
             name: 'vote.rs',
             code: `#![no_std]

@@ -44,6 +44,7 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
     const [pendingClaim, setPendingClaim] = useState(false);
     const [deleteError, setDeleteError] = useState(0);
     const accountSnap = useSnapshot(accountState);
+    const [inputError, setInputError] = useState("");
     const apiNetworkProvider = getNetworkState<ApiNetworkProvider>('apiNetworkProvider')
 
     useEffect(() => {
@@ -112,73 +113,97 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
         }
     }, [deleteError])
 
-    const deploySC = useCallback(() => {
+    const deploySC = useCallback(async () => {
         let argumentsInit: any[] = []
+        let hasInputError = false;
 
-        switch (id) {
-            case "tokenswap":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqnv6f4gmfva26uqepmu5py450rge00l2an60q52aze8")),
-                    new TokenIdentifierValue(inputValue.input1),
-                    new U64Value(Number(inputValue.input2)),
-                   //new U8Value(0)
-                ]
-                break;
-            case "lottery":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq9a2xnq64u5c8meytze7gjt66g99tc208n60q6w3y88")),
-                ]
-                break;
-            case "nftminter":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqxfwsnq0pyqa7e3kysnp57rmryg4hputnn60qh7p5kx")),
-                ]
-                break;
-            case "crowdfunding":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq0em87xgzarfaknrtgpxyllqec9kvx7nzn60qhj5qje")),
-                    new BigUIntValue(Number(inputValue.input1)),
-                    new U64Value(Number((new Date().getTime())/1000 + Number(inputValue.input2)*24*60*60))
-                ]
-                break;
-            case "nftauction":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqz6hkazz2vlu8pdsjv2zeckrd38kku68un60q6tmeng")),
-                ]
-                break;
-            case "tokensminter":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq49gxv5fg2ren55ul33lj7zkt2jv7mrcqn60q2c8drl")),
-                ]
-                break;
-            case "vote":
-                argumentsInit = [
-                    new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq9jk447536d2u3vs3lfpl3rj7xsyjdgwwn60qa7k5pc")),
-                ]
-                break;
-            default:
-                argumentsInit = []
-                break;
+        const { data, error } = await supabase
+            .from("contracts")
+            .select()
+            .eq('user', accountSnap.address)
+            .eq('name', name)
+
+        if (data?.length === 0) {
+            switch (id) {
+                case "tokenswap":
+                    if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
+                        argumentsInit = [
+                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq7ax3xrkh2dh4scjayuj72wcx9046h442n60qrxkgs7")),
+                            new TokenIdentifierValue(inputValue.input1),
+                            new U64Value(Number(inputValue.input2)),
+                        ]
+                        console.log("da")
+                    } else {
+                        hasInputError = true;
+                    }
+                    break;
+                case "lottery":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq7a7gwazshz3x727lvw60mzx6xd68z4n4n60qzxsa63")),
+                    ]
+                    break;
+                case "nftminter":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq4eh72fx9zxtkcrqkfdz320l07jyd0uevn60qlhhmk3")),
+                    ]
+                    break;
+                case "crowdfunding":
+                    if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
+                        argumentsInit = [
+                            new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqcjgrpxjgxy7e2wuquhd0pryvxenc7l48n60q0k2w0y")),
+                            new BigUIntValue(Number(inputValue.input1)),
+                            new U64Value(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60))
+                        ]
+                    } else {
+                        hasInputError = true;
+                    }
+                    break;
+                case "nftauction":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqrkudl3d0ruvp8lev79x5p9l05lcynzs3n60qyx977z")),
+                    ]
+                    break;
+                case "tokensminter":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqamd2l8e3yct0n6he5vy67llq34m72ffrn60qjt2kz4")),
+                    ]
+                    break;
+                case "vote":
+                    argumentsInit = [
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqez3l87u6c8gl04ktptmfl63uryd3smm2n60qp343l8")),
+                    ]
+                    break;
+                default:
+                    argumentsInit = []
+                    break;
+            }
+
+            let ca = "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua"
+            let contractfunction = new ContractFunction("deploy_contract")
+
+            if (hasInputError === false) {
+                triggerTx({
+                    smartContractAddress: ca,
+                    func: contractfunction,
+                    gasLimit: 80000000,
+                    args: argumentsInit,
+                    value: Number(0)
+                }).catch((err) => {
+                    console.log(err)
+                })
+                //setName('')
+                setInputError("")
+                setInputValue({
+                    input1: "",
+                    input2: ""
+                })
+                onClose()
+            } else {
+                setInputError("Inputs needs to be completed")
+            }
+        } else {
+            setInputError("You already have a contract with this name")
         }
-
-        let ca = "erd1qqqqqqqqqqqqqpgqf3zy9x5902yn2ncqawav2y0y7kxnfkw7n60qh6sdua"
-        let contractfunction = new ContractFunction("deploy_contract")
-
-        triggerTx({
-            smartContractAddress: ca,
-            func: contractfunction,
-            gasLimit: 100000000,
-            args: argumentsInit,
-            value: Number(0)
-        }).catch((err) => {
-            console.log(err)
-        })
-        //setName('')
-        setInputValue({
-            input1: "",
-            input2: ""
-        })
-        onClose()
     }, [triggerTx]);
 
     const claimContract = () => {
@@ -211,7 +236,7 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
     return (
         <MainLayout>
             <HeaderMenu>
-                <HeaderMenuButtons enabled={['auth']} changeChain={changeChain}/>
+                <HeaderMenuButtons enabled={['auth']} changeChain={changeChain} />
             </HeaderMenu>
             <Authenticated
                 spinnerCentered
@@ -335,6 +360,12 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
                                         </div>
                                     )
                                 })}
+                                {inputError !== "" && <p style={{
+                                    color: "red",
+                                    width: "100%",
+                                    textAlign: "center",
+                                    marginTop: "7px"
+                                }}>{inputError}</p>}
                             </ModalBody>
                             <ModalFooter>
                                 <button className="deployModalButton" onClick={() => {

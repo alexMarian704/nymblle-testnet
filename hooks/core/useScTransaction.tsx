@@ -21,7 +21,7 @@ import { useWebWalletTxSend } from './common-helpers/useWebWalletTxSend';
 
 interface ScTransactionParams {
   smartContractAddress: string;
-  func: ContractFunction;
+  func?: ContractFunction;
   gasLimit: number;
   args: TypedValue[] | undefined;
   value: number | undefined;

@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Spinner, Text } from '@chakra-ui/react'
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import { HeaderMenu } from '../../../../components/ui/HeaderMenu'
 import { MainLayout } from '../../../../components/ui/MainLayout'
@@ -10,7 +10,7 @@ import { Authenticated } from '../../../../components/tools/Authenticated'
 import { LoginModalButton } from '../../../../components/tools/LoginModalButton'
 import { getNetworkState } from '../../../../store/network'
 import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers/out';
-import { Address, AddressValue, BigUIntType, BigUIntValue, Code, CodeMetadata, ContractFunction, NullType, ResultsParser, SmartContract, TokenIdentifierValue, TokenPayment, Transaction, U64Value, U8Value } from "@elrondnetwork/erdjs";
+import { Address, AddressValue, BigUIntType, BigUIntValue, BytesValue, Code, CodeMetadata, ContractFunction, NullType, ResultsParser, SmartContract, TokenIdentifierValue, TokenPayment, Transaction, U64Value, U8Value } from "@elrondnetwork/erdjs";
 import { accountState } from '../../../../store/auth'
 import { useSnapshot } from 'valtio'
 import { contractsFunctionGet } from '../../../../config/contractFunctions'
@@ -85,17 +85,39 @@ const ContractInteract: FC = () => {
     const [get, setGet] = useState(false);
     const [contractData, setContractData] = useState<ContractData[]>([]);
 
-    useEffect(() => {
-        const queryContracts = async () => {
-            if (type) {
-                let isLotteryActive = true;
-                if (type === "lottery") {
+    const queryContracts = async () => {
+        if (type) {
+            let isLotteryActive = true;
+            if (type === "lottery" || type === "nftauction") {
+                let stringAddress = String(id)
+                let contractAddress = new Address(stringAddress);
+                let contract = new SmartContract({ address: contractAddress });
+
+                let query = contract.createQuery({
+                    func: new ContractFunction("getStatus"),
+                    args: [],
+                    caller: new Address(accountSnap.address)
+                });
+
+                let resultsParser = new ResultsParser()
+                let queryResponse = await apiNetworkProvider.queryContract(query)
+                let bundle = resultsParser.parseUntypedQueryResponse(queryResponse);
+
+                if (bundle.values[0].toString('hex') === "01") {
+                    isLotteryActive = false;
+                }
+            }
+
+            if (isLotteryActive === true || (type !== "lottery" && type !== "nftauction")) {
+                let stringType = String(type)
+                for (let i = 0; i < contractsFunctionGet[stringType].length; i++) {
                     let stringAddress = String(id)
                     let contractAddress = new Address(stringAddress);
                     let contract = new SmartContract({ address: contractAddress });
+                    let userAddress = new Address(accountSnap.address);
 
                     let query = contract.createQuery({
-                        func: new ContractFunction("getStatus"),
+                        func: new ContractFunction(contractsFunctionGet[stringType][i].name),
                         args: [],
                         caller: new Address(accountSnap.address)
                     });
@@ -104,53 +126,57 @@ const ContractInteract: FC = () => {
                     let queryResponse = await apiNetworkProvider.queryContract(query)
                     let bundle = resultsParser.parseUntypedQueryResponse(queryResponse);
 
-                    if (bundle.values[0].toString('hex') === "01") {
-                        isLotteryActive = false;
+                    if (bundle.values[0] == undefined)
+                        continue;
+
+                    if (type === "lottery" && i === 0) {
+                        setFunction0("Active")
                     }
-                }
 
-                if (isLotteryActive === true || type !== "lottery") {
-                    let stringType = String(type)
-                    for (let i = 0; i < contractsFunctionGet[stringType].length; i++) {
-                        let stringAddress = String(id)
-                        let contractAddress = new Address(stringAddress);
-                        let contract = new SmartContract({ address: contractAddress });
-                        let userAddress = new Address(accountSnap.address);
-
-                        let query = contract.createQuery({
-                            func: new ContractFunction(contractsFunctionGet[stringType][i].name),
-                            args: [],
-                            caller: new Address(accountSnap.address)
-                        });
-
-                        let resultsParser = new ResultsParser()
-                        let queryResponse = await apiNetworkProvider.queryContract(query)
-                        let bundle = resultsParser.parseUntypedQueryResponse(queryResponse);
-
-                        if (bundle.values[0] == undefined)
-                            continue;
-
-                        //console.log(bundle.values[0].toString('hex'));
-                        if (bundle.values[0].toString('hex') !== "") {
-                            if (i === 0) {
-                                setFunction0(bundle.values[0].toString('hex'))
-                            } else if (i === 1) {
-                                setFunction1(bundle.values[0].toString('hex'))
-                            } else if (i === 2) {
-                                setFunction2(bundle.values[0].toString('hex'))
-                            } else if (i === 3) {
-                                setFunction3(bundle.values[0].toString('hex'))
-                            } else if (i === 4) {
-                                setFunction4(bundle.values[0].toString('hex'))
-                            } else if (i === 5) {
-                                setFunction5(bundle.values[0].toString('hex'))
+                    if (bundle.values[0].toString('hex') !== "") {
+                        const result = bundle.values[0].toString('hex');
+                        if (i === 0) {
+                            setFunction0(result)
+                        } else if (i === 1) {
+                            if (type === "lottery" || type === "vote") {
+                                let date = new Date(parseInt(result, 16) * 1000).toLocaleDateString();
+                                setFunction1(date);
+                            } else {
+                                setFunction1(result)
                             }
+                        } else if (i === 2) {
+                            if (type === "lottery") {
+                                setFunction2(parseInt(result, 16).toString());
+                            } else if (type === "vote") {
+                                if (result === "01") {
+                                    setFunction2("Inactive");
+                                } else {
+                                    setFunction2("Active");
+                                }
+                            } else {
+                                setFunction2(result)
+                            }
+                        } else if (i === 3) {
+                            if (type === "lottery") {
+                                setFunction3((parseInt(result, 16) / (10 ** 18)).toString() + " EGLD");
+                            } else {
+                                setFunction3(result)
+                            }
+                        } else if (i === 4) {
+                            setFunction4(result)
+                        } else if (i === 5) {
+                            setFunction5(result)
                         }
-                        // const response = new Address(bundle.values[0].toString('hex')).bech32()
                     }
+                    // const response = new Address(bundle.values[0].toString('hex')).bech32()
                 }
+            } else {
+                setFunction0("Inactive")
             }
         }
+    }
+
+    useEffect(() => {
 
         const getContractData = async () => {
             const { data, error } = await supabase
@@ -160,15 +186,28 @@ const ContractInteract: FC = () => {
 
             if (data != null)
                 setContractData(data);
-            console.log(data);
         }
 
         getContractData();
         queryContracts();
     }, [type])
 
-    //console.log(function0, function1, function2, function3, function4);
-
+    useEffect(() => {
+        if (transaction !== null) {
+            setFunctionValue({
+                function0: "",
+                function1: "",
+                function2: "",
+                function3: "",
+                function4: "",
+                function5: "",
+                function6: "",
+            })
+            setTimeout(() => {
+                queryContracts();
+            }, 600)
+        }
+    }, [transaction])
 
     const queryAll = async (functionName: string) => {
         let stringAddress = String(id)
@@ -192,7 +231,7 @@ const ContractInteract: FC = () => {
         return !isNaN(s) && Number(s) > 0;
     }
 
-    const sendSCTransaction = useCallback((indexStart: number, functionName: string, argType: any[], divIndex: number) => {
+    const sendSCTransaction = useCallback((indexStart: number, functionName: string, argType: any[], divIndex: number, dataType: any[]) => {
         let argumentsInit: any[] = []
         let hasEGLDValue = -1;
         let hasESDTValue = -1;
@@ -205,7 +244,11 @@ const ContractInteract: FC = () => {
             if (argType[i] === "U64") {
                 if (functionValue[`function${indexStart + i}`] !== "") {
                     if (isPositiveFloat(functionValue[`function${indexStart + i}`])) {
-                        argumentsInit.push(new U64Value(parseFloat(functionValue[`function${indexStart + i}`])));
+                        if (dataType[i] === "Deadline | Number(days)") {
+                            argumentsInit.push(new U64Value(Math.ceil(Number((new Date().getTime()) / 1000 + parseFloat(functionValue[`function${indexStart + i}`]) * 24 * 60 * 60))));
+                        } else {
+                            argumentsInit.push(new U64Value(parseFloat(functionValue[`function${indexStart + i}`])));
+                        }
                     } else {
                         setInputError(divIndex + 20)
                         hasError = true;
@@ -265,38 +308,60 @@ const ContractInteract: FC = () => {
             }
         }
 
-        // triggerTx({
-        //     smartContractAddress: ca,
-        //     func: contractfunction,
-        //     gasLimit: 100000000,
-        //     args: [new U64Value(1689730158), new BigUIntValue(new BigNumber(1 * (10 ** 18))), new U64Value(1)],
-        //     value: Number(0)
-        // }).catch((err) => {
-        //     console.log(err)
-        // })
+        if (type === "nftminter") {
+            if (functionValue["function1"] !== functionValue["function1"].toUpperCase()) {
+                setInputError(divIndex)
+                hasError = true;
+            } else {
+                setInputError(-1)
+                hasError = false;
+            }
+        }
 
-        if (!hasError && !hasESDTValue) {
-            setInputError(-1);
+        if (type === "nftminter" && !hasError) {
             triggerTx({
                 smartContractAddress: ca,
                 func: contractfunction,
                 gasLimit: 80000000,
-                args: argumentsInit,
-                value: hasEGLDValue != -1 ? Number(functionValue[hasEGLDValue]) : Number(0)
+                args: functionName === "issue_token" ? [BytesValue.fromUTF8(functionValue["function0"]), BytesValue.fromUTF8(functionValue["function1"])] : [BytesValue.fromUTF8(functionValue["function2"]), BytesValue.fromUTF8(functionValue["function3"])],
+                value: functionName === "issue_token" ? Number(0.05) : Number(0)
+            })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else if (type === "nftauction" && functionName === "start_auction") {
+            triggerTx({
+                smartContractAddress: accountSnap.address,
+                func: new ContractFunction("ESDTNFTTransfer"),
+                gasLimit: 100000000,
+                args: [BytesValue.fromUTF8(""), BytesValue.fromUTF8(""), BytesValue.fromUTF8("1"), BytesValue.fromUTF8(ca), BytesValue.fromUTF8("start_auction"), ...argumentsInit],
+                value: Number(0)
             }).catch((err) => {
                 console.log(err)
             })
-        } else if (hasESDTValue && !hasError) {
-            triggerTxESDT({
-                smartContractAddress: ca,
-                func: contractfunction,
-                gasLimit: 80000000,
-                value: hasESDTValue != -1 ? Number(functionValue[hasESDTValue]) : Number(0)
-            }).catch((err) => {
-                console.log(err)
-            })
+        } else {
+            if (!hasError && hasESDTValue === -1) {
+                setInputError(-1);
+                triggerTx({
+                    smartContractAddress: ca,
+                    func: contractfunction,
+                    gasLimit: 100000000,
+                    args: argumentsInit,
+                    value: hasEGLDValue != -1 ? Number(functionValue[hasEGLDValue]) : Number(0)
+                }).catch((err) => {
+                    console.log(err)
+                })
+            } else if (hasESDTValue !== -1 && !hasError) {
+                triggerTxESDT({
+                    smartContractAddress: ca,
+                    func: contractfunction,
+                    gasLimit: 80000000,
+                    value: hasESDTValue != -1 ? Number(functionValue[hasESDTValue]) : Number(0)
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
         }
-
 
     }, [triggerTx, triggerTxESDT])
 
@@ -389,13 +454,13 @@ const ContractInteract: FC = () => {
                                     }}>
                                         <p>{func.dataType[0]}</p>
                                     </div>}
-                                <button className={style.setButton} onClick={() => sendSCTransaction(func.numberOfInputs, func.name, func.args, i)}><i className="bi bi-check2"></i></button>
+                                <button className={style.setButton} onClick={() => sendSCTransaction(func.numberOfInputs, func.name, func.args, i, func.dataType)}><i className="bi bi-check2"></i></button>
                                 {inputError === i && <p style={{
                                     color: "red",
                                     width: "100%",
                                     textAlign: "center",
                                     marginTop: "7px"
-                                }}>Please complete the required inputs</p>}
+                                }}>Please complete the required inputs approperly</p>}
                                 {inputError === (i + 20) && <p style={{
                                     color: "red",
                                     width: "100%",
@@ -405,7 +470,20 @@ const ContractInteract: FC = () => {
                             </div>
                         )
                     })}
+                    {pending === true && <div className='loadingContainer'>
+                        <Spinner
+                            speed='0.9s'
+                            width="170px"
+                            height="170px"
+                            thickness='17px'
+                            color='rgb(3,151,91)'
+                            marginBottom="20px"
+                        />
+                        <p>Transaction loading....</p>
+                        <p>Please wait</p>
+                    </div>}
                 </div>
+                <p className={style.docsMessage}>Don't understand what all this stuff do? Please check out the <a href="https://nymblle.com/docs">Docs</a></p>
             </Authenticated>
         </MainLayout>
     )

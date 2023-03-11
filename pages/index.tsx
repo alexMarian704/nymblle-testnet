@@ -165,8 +165,8 @@ const Home: FC = () => {
           <h2 className='headerText'><i className="bi bi-file-code"></i> Deployed Contracts</h2>
           <div className="mainDeployTitles">
             <div className='mainDeployInfo'>
-              <h3>Deployed contracts</h3>
-              <p>The list of contract instances that you have deployed with smartstack across all networks.</p>
+              {/* <h3>Deployed contracts</h3> */}
+              <p>The list of contract instances that you have deployed with smartstack.</p>
             </div>
             <div className='mainDeployButtonDiv'>
               <button onClick={() => {

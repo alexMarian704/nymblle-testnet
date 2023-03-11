@@ -128,7 +128,7 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
                     break;
                 case "nftminter":
                     argumentsInit = [
-                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq353stmkss82m0kvc3je02h6rp4temqwcn60q0pae05")),
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgq4eh72fx9zxtkcrqkfdz320l07jyd0uevn60qlhhmk3")),
                     ]
                     break;
                 case "crowdfunding":
@@ -226,9 +226,9 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
                 color: "rgb(210,210,210)"
             }}>Find the best smart contract for you. Deploy easily with one click.</p>
             <div>
-                <ContractsList title='NFTs' description='NFT Collections and everything else NFT-related' numberOfContracts={3} onOpen={onOpen} setInput={setInput} />
-                <ContractsList title='Tokens' description='NFT Collections and everything else NFT-related' numberOfContracts={3} onOpen={onOpen} setInput={setInput} />
-                <ContractsList title='Dapps' description='NFT Collections and everything else NFT-related' numberOfContracts={2} onOpen={onOpen} setInput={setInput} />
+                <ContractsList title='NFTs' description='NFT Collections and everything else NFT-related.' numberOfContracts={3} onOpen={onOpen} setInput={setInput} />
+                <ContractsList title='Tokens' description='Mint and Swap Tokens.' numberOfContracts={3} onOpen={onOpen} setInput={setInput} />
+                <ContractsList title='Dapps' description='Create and manage your own Dapps.' numberOfContracts={2} onOpen={onOpen} setInput={setInput} />
             </div>
             <Modal
                 isOpen={isOpen}

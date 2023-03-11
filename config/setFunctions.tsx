@@ -15,20 +15,20 @@ interface Contract {
 export const contractsFunctionSet: Contract = {
     nftminter: [
         {
-            name: "issueToken",
+            name: "issue_token",
             title: "Issue Token",
             description: "Raising funds up to a certain amount",
-            args: ["EGLD", "ManagedBuffer", "ManagedBuffer"],
-            dataType: ["EGLD | Number", "Token Name | String", "Token Ticker | Number"],
+            args: [ "ManagedBuffer", "ManagedBuffer"],
+            dataType: [ "Collection Name | String", "Collection Ticker | String(Upper Case)"],
             numberOfInputs:0
         },
         {
-            name: "createNft",
+            name: "create_nft",
             title: "Create NFT",
             description: "Raising funds up to a certain amount",
             args: ["ManagedBuffer", "ManagedBuffer"],
             dataType: ["Name | String", "Uri | String"],
-            numberOfInputs:3
+            numberOfInputs:2
         },
     ],
     tokenswap: [
@@ -87,7 +87,7 @@ export const contractsFunctionSet: Contract = {
             title: "Start Auction",
             description: "Raising funds up to a certain amount",
             args: ["BigUint", "U64", "U64"],
-            dataType: ["Starting Price | Number", "Deadline | Number", "Nonce | Number"],
+            dataType: ["Starting Price | Number", "Deadline | Number(days)", "Nonce | Number"],
             numberOfInputs:0
         },
         {
@@ -131,7 +131,7 @@ export const contractsFunctionSet: Contract = {
             title: "Start Lottery",
             description: "Raising funds up to a certain amount",
             args: ["U64", "BigUint", "U64"],
-            dataType: ["Deadline | Number", "Ticket Price | Number", "Max Entries Per User | Number"],
+            dataType: ["Deadline | Number(days)", "Ticket Price | Number", "Max Entries Per User | Number"],
             numberOfInputs:0
         },
         {
@@ -174,8 +174,8 @@ export const contractsFunctionSet: Contract = {
             name: "start_vote",
             title: "Start Vote",
             description: "Raising funds up to a certain amount",
-            args: ["EGLD", "ManagedBuffer", "ManagedBuffer"],
-            dataType: ["Deadline | String", "Title | String", "Description | String"],
+            args: ["U64", "ManagedBuffer", "ManagedBuffer"],
+            dataType: ["Deadline | Number(days)", "Title | String", "Description | String"],
             numberOfInputs:0
         },
     ]

@@ -48,9 +48,6 @@ export const sendTxOperations = async (
   cb?: (params: TransactionCb) => void
 ) => {
   try {
-    const provider = new WalletProvider(WALLET_PROVIDER_TESTNET);
-    console.log(chainType)
-
     if (dappProvider instanceof WalletProvider) {
       const currentUrl = window?.location.href;
       await dappProvider.signTransaction(tx, {

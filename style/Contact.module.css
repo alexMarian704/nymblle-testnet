@@ -271,3 +271,16 @@
 .contractNameContainer span{
     text-decoration: underline;
 }
+
+.docsMessage{
+    font-weight: 900;
+    width: 100%;
+    text-align: center;
+    margin-top: 60px;
+    font-size: calc(17px + 0.1vw);
+}
+
+.docsMessage a{
+    color: rgb(3, 151, 90);
+    text-decoration: underline;
+}
