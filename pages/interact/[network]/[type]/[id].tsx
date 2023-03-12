@@ -88,7 +88,7 @@ const ContractInteract: FC = () => {
     const queryContracts = async () => {
         if (type) {
             let isLotteryActive = true;
-            if (type === "lottery" || type === "nftauction") {
+            if (type === "lottery" || type === "nftauction" || type === "crowdfunding") {
                 let stringAddress = String(id)
                 let contractAddress = new Address(stringAddress);
                 let contract = new SmartContract({ address: contractAddress });
@@ -108,7 +108,7 @@ const ContractInteract: FC = () => {
                 }
             }
 
-            if (isLotteryActive === true || (type !== "lottery" && type !== "nftauction")) {
+            if (isLotteryActive === true || (type !== "lottery" && type !== "nftauction" && type !== "crowdfunding")) {
                 let stringType = String(type)
                 for (let i = 0; i < contractsFunctionGet[stringType].length; i++) {
                     let stringAddress = String(id)
@@ -132,20 +132,29 @@ const ContractInteract: FC = () => {
                     if ((type === "lottery" || type === "nftauction") && i === 0) {
                         setFunction0("Active")
                     }
+                    if (type === "crowdfunding" && i === 3) {
+                        setFunction3("Active")
+                    }
 
                     if (bundle.values[0].toString('hex') !== "") {
                         const result = bundle.values[0].toString('hex');
                         if (i === 0) {
-                            setFunction0(result)
+                            if (type === "tokenswap" || type === "crowdfunding") {
+                                setFunction0((parseInt(result, 16) / (10 ** 18)).toString())
+                            } else {
+                                setFunction0(result)
+                            }
                         } else if (i === 1) {
-                            if (type === "lottery" || type === "vote") {
+                            if (type === "lottery" || type === "vote" || type === "crowdfunding") {
                                 let date = new Date(parseInt(result, 16) * 1000).toLocaleDateString();
                                 setFunction1(date);
+                            } else if (type === "tokenswap") {
+                                setFunction1((parseInt(result, 16) / (10 ** 18)).toString())
                             } else {
                                 setFunction1(result)
                             }
                         } else if (i === 2) {
-                            if (type === "lottery") {
+                            if (type === "lottery" || type === "crowdfunding") {
                                 setFunction2(parseInt(result, 16).toString());
                             } else if (type === "vote") {
                                 if (result === "01") {
@@ -168,10 +177,13 @@ const ContractInteract: FC = () => {
                             setFunction5(result)
                         }
                     }
-                    // const response = new Address(bundle.values[0].toString('hex')).bech32()
                 }
             } else {
-                setFunction0("Inactive")
+                if (type === "crowdfunding") {
+                    setFunction3("Inactive")
+                } else {
+                    setFunction0("Inactive")
+                }
             }
         }
     }
@@ -260,7 +272,7 @@ const ContractInteract: FC = () => {
             } else if (argType[i] === "ManagedBuffer") {
                 if (functionValue[`function${indexStart + i}`] !== "") {
                     if (typeof functionValue[`function${indexStart + i}`] === "string") {
-                        argumentsInit.push(functionValue[`function${indexStart + i}`]);
+                        argumentsInit.push(BytesValue.fromUTF8(functionValue[`function${indexStart + i}`]));
                     } else {
                         setInputError(divIndex + 20)
                         hasError = true;
@@ -338,6 +350,17 @@ const ContractInteract: FC = () => {
             }).catch((err) => {
                 console.log(err)
             })
+        } else if (type === "tokensminter" && functionName === "issue_token") {
+            argumentsInit.push(new U8Value(18))
+            triggerTx({
+                smartContractAddress: ca,
+                func: contractfunction,
+                gasLimit: 100000000,
+                args: argumentsInit,
+                value: Number(0.05)
+            }).catch((err) => {
+                console.log(err)
+            })
         } else {
             if (!hasError && hasESDTValue === -1) {
                 setInputError(-1);
@@ -346,16 +369,17 @@ const ContractInteract: FC = () => {
                     func: contractfunction,
                     gasLimit: 100000000,
                     args: argumentsInit,
-                    value: hasEGLDValue != -1 ? Number(functionValue[hasEGLDValue]) : Number(0)
+                    value: hasEGLDValue != -1 ? Number(functionValue[`function${hasEGLDValue}`]) : Number(0)
                 }).catch((err) => {
                     console.log(err)
                 })
             } else if (hasESDTValue !== -1 && !hasError) {
+                setInputError(-1);
                 triggerTxESDT({
                     smartContractAddress: ca,
                     func: contractfunction,
                     gasLimit: 80000000,
-                    value: hasESDTValue != -1 ? Number(functionValue[hasESDTValue]) : Number(0)
+                    value: hasESDTValue != -1 ? Number(functionValue[`function${hasEGLDValue}`]) : Number(0)
                 }).catch((err) => {
                     console.log(err)
                 })

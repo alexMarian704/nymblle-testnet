@@ -156,8 +156,8 @@ export const contractsFunctionSet: Contract = {
             name: "issue_token",
             title: "Issue Token",
             description: "Raising funds up to a certain amount",
-            args: ["EGLD", "BigUint", "ManagedBuffer"],
-            dataType: ["EGLD | Number", "Token Display Name | String", "Token Ticker | Number"],
+            args: ["ManagedBuffer", "ManagedBuffer"],
+            dataType: ["Token Display Name | String", "Token Ticker | String"],
             numberOfInputs:0
         },
         {
@@ -166,7 +166,7 @@ export const contractsFunctionSet: Contract = {
             description: "Raising funds up to a certain amount",
             args: ["BigUint"],
             dataType: ["Initial Supply | Number"],
-            numberOfInputs:3
+            numberOfInputs:2
         },
     ],
     vote: [

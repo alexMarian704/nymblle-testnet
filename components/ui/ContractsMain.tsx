@@ -61,7 +61,7 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
                 if (queryData?.length === 0) {
                     const { data, error } = await supabase
                         .from("contracts")
-                        .insert([{ user: accountSnap.address, name: name, contract_type: input, network: chainState, address: userContractAddress }])
+                        .insert([{ user: accountSnap.address, name: name.trim(), contract_type: input, network: chainState, address: userContractAddress }])
                     setClaim(userContractAddress)
                 }
             }
@@ -137,10 +137,11 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
                     break;
                 case "crowdfunding":
                     if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
+                        console.log(Math.ceil(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60)))
                         argumentsInit = [
                             new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqcjgrpxjgxy7e2wuquhd0pryvxenc7l48n60q0k2w0y")),
                             new BigUIntValue(Number(inputValue.input1)),
-                            new U64Value(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60))
+                            new U64Value(Math.ceil(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60)))
                         ]
                     } else {
                         hasInputError = true;

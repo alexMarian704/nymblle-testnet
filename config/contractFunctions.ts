@@ -69,13 +69,13 @@ export const contractsFunctionGet: Contract = {
             description: "Raising funds up to a certain amount",
         },
         {
-            name: "getTarget",
-            title: "Target",
+            name: "getDeadline",
+            title: "Deadline",
             description: "Raising funds up to a certain amount",
         },
         {
-            name: "getDeadline",
-            title: "Deadline",
+            name: "getTarget",
+            title: "Target",
             description: "Raising funds up to a certain amount",
         },
         {

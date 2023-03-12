@@ -84,7 +84,7 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
                 if (queryData?.length === 0) {
                     const { data, error } = await supabase
                         .from("contracts")
-                        .insert([{ user: accountSnap.address, name: name, contract_type: id, network: chainState, address: userContractAddress }])
+                        .insert([{ user: accountSnap.address, name: name.trim(), contract_type: id, network: chainState, address: userContractAddress }])
                     setClaim(userContractAddress)
                 }
             }
@@ -121,9 +121,13 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
             .from("contracts")
             .select()
             .eq('user', accountSnap.address)
-            .eq('name', name)
-
-        if (data?.length === 0) {
+            .eq('name', name.trim())
+        
+        if(name.trim().length === 0){
+            setInputError("Name input needs to be completed")
+        }else if(name.trim().length > 14){
+            setInputError("Your contract name is too long")
+        }else if (data?.length === 0) {
             switch (id) {
                 case "tokenswap":
                     if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {
@@ -152,7 +156,7 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
                         argumentsInit = [
                             new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqcjgrpxjgxy7e2wuquhd0pryvxenc7l48n60q0k2w0y")),
                             new BigUIntValue(Number(inputValue.input1)),
-                            new U64Value(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60))
+                            new U64Value(Math.ceil(Number((new Date().getTime()) / 1000 + Number(inputValue.input2) * 24 * 60 * 60)))
                         ]
                     } else {
                         hasInputError = true;

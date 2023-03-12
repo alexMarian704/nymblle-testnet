@@ -178,7 +178,6 @@ const Home: FC = () => {
             <div className='mainDeployBodyNav'>
               <p>Name</p>
               <p>Type</p>
-              <p>Network</p>
               <p>Address</p>
               <p>Interact</p>
             </div>
@@ -188,7 +187,6 @@ const Home: FC = () => {
                   <div key={i} className="contractContainer">
                     <p>{contract.name}</p>
                     <p>{contract.contract_type}</p>
-                    <p>{contract.network}</p>
                     <p>{width > 650 ? shortenHash(contract.address, 4) : shortenHash(contract.address, 3)}<i onClick={() => {
                       navigator.clipboard.writeText(contract.address)
                     }} style={{
