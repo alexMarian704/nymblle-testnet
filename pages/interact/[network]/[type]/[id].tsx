@@ -129,7 +129,7 @@ const ContractInteract: FC = () => {
                     if (bundle.values[0] == undefined)
                         continue;
 
-                    if (type === "lottery" && i === 0) {
+                    if ((type === "lottery" || type === "nftauction") && i === 0) {
                         setFunction0("Active")
                     }
 
@@ -325,16 +325,15 @@ const ContractInteract: FC = () => {
                 gasLimit: 80000000,
                 args: functionName === "issue_token" ? [BytesValue.fromUTF8(functionValue["function0"]), BytesValue.fromUTF8(functionValue["function1"])] : [BytesValue.fromUTF8(functionValue["function2"]), BytesValue.fromUTF8(functionValue["function3"])],
                 value: functionName === "issue_token" ? Number(0.05) : Number(0)
+            }).catch((err) => {
+                console.log(err)
             })
-                .catch((err) => {
-                    console.log(err)
-                })
         } else if (type === "nftauction" && functionName === "start_auction") {
             triggerTx({
                 smartContractAddress: accountSnap.address,
                 func: new ContractFunction("ESDTNFTTransfer"),
                 gasLimit: 100000000,
-                args: [BytesValue.fromUTF8(""), BytesValue.fromUTF8(""), BytesValue.fromUTF8("1"), BytesValue.fromUTF8(ca), BytesValue.fromUTF8("start_auction"), ...argumentsInit],
+                args: [BytesValue.fromUTF8(functionValue["function0"]), BytesValue.fromUTF8("1"), BytesValue.fromUTF8("1"), BytesValue.fromUTF8(ca), BytesValue.fromUTF8("start_auction"), ...argumentsInit],
                 value: Number(0)
             }).catch((err) => {
                 console.log(err)

@@ -194,7 +194,8 @@ const Home: FC = () => {
                     }} style={{
                       marginLeft: "4px",
                       fontSize: "calc(15px + 0.1vw)",
-                    }} className="bi bi-file-earmark-plus-fill" id='copyButton'></i></p>
+                    }} className="bi bi-back" id='copyButton'></i></p>
+                    {/* bi bi-file-earmark-plus-fill */}
                     {addressLoading === false && unclaimedAddress.includes(contract.address) === false && <button onClick={() => {
                       router.push(`/interact/${contract.network}/${contract.contract_type}/${contract.address}`)
                     }} ><i className="bi bi-cursor"></i> {width > 700 ? "Interact" : ""}</button>}

@@ -106,9 +106,13 @@ const ContractsMain: FC<ContractsMainProps> = ({ chainState }) => {
             .from("contracts")
             .select()
             .eq('user', accountSnap.address)
-            .eq('name', name)
-
-        if (data?.length === 0) {
+            .eq('name', name.trim())
+        
+        if(name.trim().length === 0){
+            setInputError("Name input needs to be completed")
+        }else if(name.trim().length > 14){
+            setInputError("Your contract name is too long")
+        }else if (data?.length === 0) {
             switch (input) {
                 case "tokenswap":
                     if (inputValue.inpu1 !== "" && inputValue.input2 !== "") {

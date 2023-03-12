@@ -86,8 +86,8 @@ export const contractsFunctionSet: Contract = {
             name: "start_auction",
             title: "Start Auction",
             description: "Raising funds up to a certain amount",
-            args: ["BigUint", "U64", "U64"],
-            dataType: ["Starting Price | Number", "Deadline | Number(days)", "Nonce | Number"],
+            args: ["Custom", "BigUint", "U64", "U64"],
+            dataType: ["Collection identifier", "Starting Price | Number", "Deadline | Number(days)", "Nonce | Number"],
             numberOfInputs:0
         },
         {
