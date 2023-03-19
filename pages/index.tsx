@@ -196,7 +196,7 @@ const Home: FC = () => {
                     {/* bi bi-file-earmark-plus-fill */}
                     {addressLoading === false && unclaimedAddress.includes(contract.address) === false && <button onClick={() => {
                       router.push(`/interact/${contract.network}/${contract.contract_type}/${contract.address}`)
-                    }} ><i className="bi bi-cursor"></i> {width > 700 ? "Interact" : ""}</button>}
+                    }} ><i className="bi bi-box-arrow-in-up-right"></i> {width > 700 ? "Interact" : ""}</button>}
                     {addressLoading === false && unclaimedAddress.includes(contract.address) === true && <button onClick={() => {
                       claimContract(contract.address)
                     }} ><i className="bi bi-file-arrow-up"></i> {width > 700 ? "Claim" : ""}</button>}

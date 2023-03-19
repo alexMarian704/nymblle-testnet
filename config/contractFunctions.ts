@@ -115,16 +115,21 @@ export const contractsFunctionGet: Contract = {
 
     ],
     vote:[
+        {
+            name: "getStatus",
+            title: "Status",
+            description: "Users buy tickets, only one wins",
+        },
         // {
         //     name: "getHistory",
         //     title: "Get History",
         //     description: "Users buy tickets, only one wins",
         // },
-        {
-            name: "getParticipants",
-            title: "Participants",
-            description: "Users buy tickets, only one wins",
-        },
+        // {
+        //     name: "getParticipants",
+        //     title: "Participants",
+        //     description: "Users buy tickets, only one wins",
+        // },
         {
             name: "getDeadline",
             title: "Deadline",
@@ -135,10 +140,5 @@ export const contractsFunctionGet: Contract = {
         //     title: "Get Content",
         //     description: "Users buy tickets, only one wins",
         // },
-        {
-            name: "getStatus",
-            title: "Status",
-            description: "Users buy tickets, only one wins",
-        },
     ]
 }

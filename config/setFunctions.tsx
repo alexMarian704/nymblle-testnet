@@ -87,7 +87,7 @@ export const contractsFunctionSet: Contract = {
             title: "Start Auction",
             description: "Raising funds up to a certain amount",
             args: ["Custom", "BigUint", "U64", "U64"],
-            dataType: ["Collection identifier", "Starting Price | Number", "Deadline | Number(days)", "Nonce | Number"],
+            dataType: ["Collection identifier", "Starting Price | Number", "Deadline | Number(days)", "NFT Number | Number"],
             numberOfInputs:0
         },
         {
@@ -96,7 +96,7 @@ export const contractsFunctionSet: Contract = {
             description: "Raising funds up to a certain amount",
             args: ["EGLD"],
             dataType: ["EGLD | Number",],
-            numberOfInputs:3
+            numberOfInputs:4
         },
         {
             name: "claim",
@@ -104,7 +104,7 @@ export const contractsFunctionSet: Contract = {
             description: "Raising funds up to a certain amount",
             args: [],
             dataType: ["No input required"],
-            numberOfInputs:4
+            numberOfInputs:5
         },
     ],
     crowdfunding: [
@@ -177,6 +177,22 @@ export const contractsFunctionSet: Contract = {
             args: ["U64", "ManagedBuffer", "ManagedBuffer"],
             dataType: ["Deadline | Number(days)", "Title | String", "Description | String"],
             numberOfInputs:0
+        },
+        {
+            name: "vote",
+            title: "Vote",
+            description: "Raising funds up to a certain amount",
+            args: ["Bool"],
+            dataType: ["Vote | String (Yes|No)"],
+            numberOfInputs:3
+        },
+        {
+            name: "secure_results",
+            title: "Store results",
+            description: "Raising funds up to a certain amount",
+            args: [],
+            dataType: ["No input required"],
+            numberOfInputs:4
         },
     ]
 }

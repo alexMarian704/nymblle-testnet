@@ -136,7 +136,6 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
                             new TokenIdentifierValue(inputValue.input1),
                             new U64Value(Number(inputValue.input2)),
                         ]
-                        console.log("da")
                     } else {
                         hasInputError = true;
                     }
@@ -164,7 +163,7 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
                     break;
                 case "nftauction":
                     argumentsInit = [
-                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqrkudl3d0ruvp8lev79x5p9l05lcynzs3n60qyx977z")),
+                        new AddressValue(new Address("erd1qqqqqqqqqqqqqpgqa4r534s9y7zu8f8zx23pvl3rt4uctzmvn60qv47jvj")),
                     ]
                     break;
                 case "tokensminter":
@@ -413,7 +412,7 @@ const RenderContract: FC = ({ chainState }: ChainFunctions) => {
                             fontSize: "calc(19px + 0.1vw)",
                             color: "rgb(3,171,91)",
                             cursor: "pointer"
-                        }} className="bi bi-file-earmark-plus"></i></p>
+                        }} className="bi bi-back"></i></p>
                         {pending === false && <button style={{
                             padding: "6px 18px 6px 18px"
                         }} onClick={claimContract}>Claim Ownership</button>}

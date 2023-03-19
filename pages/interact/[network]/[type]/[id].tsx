@@ -10,7 +10,7 @@ import { Authenticated } from '../../../../components/tools/Authenticated'
 import { LoginModalButton } from '../../../../components/tools/LoginModalButton'
 import { getNetworkState } from '../../../../store/network'
 import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers/out';
-import { Address, AddressValue, BigUIntType, BigUIntValue, BytesValue, Code, CodeMetadata, ContractFunction, NullType, ResultsParser, SmartContract, TokenIdentifierValue, TokenPayment, Transaction, U64Value, U8Value } from "@elrondnetwork/erdjs";
+import { Address, AddressValue, BigUIntType, BigUIntValue, BooleanValue, BytesValue, Code, CodeMetadata, ContractFunction, NullType, ResultsParser, SmartContract, TokenIdentifierValue, TokenPayment, Transaction, U64Value, U8Value } from "@elrondnetwork/erdjs";
 import { accountState } from '../../../../store/auth'
 import { useSnapshot } from 'valtio'
 import { contractsFunctionGet } from '../../../../config/contractFunctions'
@@ -88,7 +88,7 @@ const ContractInteract: FC = () => {
     const queryContracts = async () => {
         if (type) {
             let isLotteryActive = true;
-            if (type === "lottery" || type === "nftauction" || type === "crowdfunding") {
+            if (type === "lottery" || type === "nftauction" || type === "crowdfunding" || type === "vote") {
                 let stringAddress = String(id)
                 let contractAddress = new Address(stringAddress);
                 let contract = new SmartContract({ address: contractAddress });
@@ -108,7 +108,7 @@ const ContractInteract: FC = () => {
                 }
             }
 
-            if (isLotteryActive === true || (type !== "lottery" && type !== "nftauction" && type !== "crowdfunding")) {
+            if (isLotteryActive === true || (type !== "lottery" && type !== "nftauction" && type !== "crowdfunding" && type !== "vote")) {
                 let stringType = String(type)
                 for (let i = 0; i < contractsFunctionGet[stringType].length; i++) {
                     let stringAddress = String(id)
@@ -129,7 +129,7 @@ const ContractInteract: FC = () => {
                     if (bundle.values[0] == undefined)
                         continue;
 
-                    if ((type === "lottery" || type === "nftauction") && i === 0) {
+                    if ((type === "lottery" || type === "nftauction" || type === "vote") && i === 0) {
                         setFunction0("Active")
                     }
                     if (type === "crowdfunding" && i === 3) {
@@ -141,14 +141,14 @@ const ContractInteract: FC = () => {
                         if (i === 0) {
                             if (type === "tokenswap" || type === "crowdfunding") {
                                 setFunction0((parseInt(result, 16) / (10 ** 18)).toString())
-                            } else {
+                            }else {
                                 setFunction0(result)
                             }
                         } else if (i === 1) {
                             if (type === "lottery" || type === "vote" || type === "crowdfunding") {
                                 let date = new Date(parseInt(result, 16) * 1000).toLocaleDateString();
                                 setFunction1(date);
-                            } else if (type === "tokenswap") {
+                            }else if (type === "tokenswap") {
                                 setFunction1((parseInt(result, 16) / (10 ** 18)).toString())
                             } else {
                                 setFunction1(result)
@@ -156,12 +156,6 @@ const ContractInteract: FC = () => {
                         } else if (i === 2) {
                             if (type === "lottery" || type === "crowdfunding") {
                                 setFunction2(parseInt(result, 16).toString());
-                            } else if (type === "vote") {
-                                if (result === "01") {
-                                    setFunction2("Inactive");
-                                } else {
-                                    setFunction2("Active");
-                                }
                             } else {
                                 setFunction2(result)
                             }
@@ -256,6 +250,7 @@ const ContractInteract: FC = () => {
             if (argType[i] === "U64") {
                 if (functionValue[`function${indexStart + i}`] !== "") {
                     if (isPositiveFloat(functionValue[`function${indexStart + i}`])) {
+                        console.log(Math.ceil(Number((new Date().getTime()) / 1000 + parseFloat(functionValue[`function${indexStart + i}`]) * 24 * 60 * 60)))
                         if (dataType[i] === "Deadline | Number(days)") {
                             argumentsInit.push(new U64Value(Math.ceil(Number((new Date().getTime()) / 1000 + parseFloat(functionValue[`function${indexStart + i}`]) * 24 * 60 * 60))));
                         } else {
@@ -317,6 +312,20 @@ const ContractInteract: FC = () => {
                     setInputError(divIndex)
                     hasError = true;
                 }
+            } else if(argType[i] === "Bool"){
+                if (functionValue[`function${indexStart + i}`] !== "") {
+                    if(functionValue[`function${indexStart + i}`].toUpperCase() === "YES"){
+                        argumentsInit.push(new BooleanValue(true));
+                    }else if(functionValue[`function${indexStart + i}`].toUpperCase() === "NO"){
+                        argumentsInit.push(new BooleanValue(false));
+                    }else{
+                        setInputError(divIndex)
+                        hasError = true;
+                    }
+                } else {
+                    setInputError(divIndex)
+                    hasError = true;
+                }
             }
         }
 
@@ -334,7 +343,7 @@ const ContractInteract: FC = () => {
             triggerTx({
                 smartContractAddress: ca,
                 func: contractfunction,
-                gasLimit: 80000000,
+                gasLimit: 120000000,
                 args: functionName === "issue_token" ? [BytesValue.fromUTF8(functionValue["function0"]), BytesValue.fromUTF8(functionValue["function1"])] : [BytesValue.fromUTF8(functionValue["function2"]), BytesValue.fromUTF8(functionValue["function3"])],
                 value: functionName === "issue_token" ? Number(0.05) : Number(0)
             }).catch((err) => {
@@ -369,7 +378,7 @@ const ContractInteract: FC = () => {
                     func: contractfunction,
                     gasLimit: 100000000,
                     args: argumentsInit,
-                    value: hasEGLDValue != -1 ? Number(functionValue[`function${hasEGLDValue}`]) : Number(0)
+                    value: (type === "lottery" && functionName === "buy_ticket") ? Number(function3.replace(' EGLD', '')) : hasEGLDValue != -1 ? Number(functionValue[`function${hasEGLDValue}`]) : Number(0)
                 }).catch((err) => {
                     console.log(err)
                 })

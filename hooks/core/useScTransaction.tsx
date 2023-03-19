@@ -87,8 +87,6 @@ export function useScTransaction(
 
       tx.setNonce(currentNonce);
 
-      console.log(dappProvider)
-
       sendTxOperations(
         dappProvider,
         tx,
